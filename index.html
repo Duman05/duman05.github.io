@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Casino UI</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+background:#081f47;
+color:white;
+}
+
+/* HEADER */
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:12px 15px;
+background:#0a214f;
+}
+
+.menu{
+font-size:24px;
+}
+
+.logo{
+font-size:22px;
+font-weight:bold;
+color:#ff3b5b;
+}
+
+.auth{
+display:flex;
+gap:10px;
+}
+
+.btn{
+padding:8px 14px;
+border-radius:12px;
+font-size:14px;
+cursor:pointer;
+}
+
+.login{
+border:1px solid #ff3b5b;
+background:transparent;
+color:white;
+}
+
+.register{
+background:#ff3b5b;
+border:none;
+color:white;
+}
+
+/* SLIDER */
+
+.slider{
+margin:15px;
+height:180px;
+border-radius:16px;
+background:#0d2b60;
+position:relative;
+display:flex;
+align-items:flex-end;
+justify-content:center;
+}
+
+.dots{
+display:flex;
+gap:8px;
+margin-bottom:12px;
+}
+
+.dot{
+width:8px;
+height:8px;
+border-radius:50%;
+background:#ff3b5b55;
+}
+
+.active{
+width:26px;
+border-radius:10px;
+background:#ff3b5b;
+}
+
+/* WINNERS */
+
+.section{
+padding:0 15px;
+margin-top:10px;
+}
+
+.section-title{
+display:inline-block;
+background:#c0183f;
+padding:6px 14px;
+border-radius:8px;
+font-size:14px;
+margin-bottom:12px;
+}
+
+.winners{
+display:flex;
+gap:10px;
+overflow-x:auto;
+}
+
+.card{
+min-width:130px;
+background:#0c2b60;
+border-radius:14px;
+padding:10px;
+text-align:center;
+}
+
+.card img{
+width:60px;
+height:60px;
+border-radius:12px;
+margin-bottom:5px;
+}
+
+.price{
+opacity:.8;
+font-size:14px;
+}
+
+/* ALERT */
+
+.alert{
+margin:15px;
+background:linear-gradient(180deg,#ff4a6e,#a8002c);
+padding:15px;
+border-radius:16px;
+text-align:center;
+font-weight:bold;
+}
+
+/* GAMES */
+
+.games-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:0 15px;
+margin-top:10px;
+}
+
+.games{
+display:flex;
+gap:12px;
+padding:15px;
+overflow-x:auto;
+}
+
+.game{
+min-width:140px;
+}
+
+.game img{
+width:100%;
+border-radius:16px;
+}
+
+.rank{
+margin-top:6px;
+font-size:14px;
+}
+
+.rtp{
+font-size:13px;
+opacity:.7;
+}
+
+/* BOTTOM NAV */
+
+.bottom{
+position:fixed;
+bottom:0;
+left:0;
+right:0;
+background:#0a214f;
+display:flex;
+justify-content:space-around;
+padding:12px 0;
+border-top-left-radius:18px;
+border-top-right-radius:18px;
+}
+
+.bottom div{
+text-align:center;
+font-size:12px;
+opacity:.8;
+}
+
+.bottom span{
+display:block;
+font-size:22px;
+margin-bottom:4px;
+}
+
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+<div class="menu">☰</div>
+<div class="logo">VayCasino</div>
+<div class="auth">
+<button class="btn login">Giriş Yap</button>
+<button class="btn register">Kayıt Ol</button>
+</div>
+</div>
+
+<!-- SLIDER -->
+<div class="slider">
+<div class="dots">
+<div class="dot"></div>
+<div class="dot"></div>
+<div class="dot active"></div>
+<div class="dot"></div>
+<div class="dot"></div>
+</div>
+</div>
+
+<!-- WINNERS -->
+<div class="section">
+<div class="section-title">Son Kazananlar</div>
+
+<div class="winners">
+
+<div class="card">
+<img src="https://via.placeholder.com/60">
+<div>******</div>
+<div class="price">1.084,2 ₺</div>
+</div>
+
+<div class="card">
+<img src="https://via.placeholder.com/60">
+<div>******</div>
+<div class="price">4.550 ₺</div>
+</div>
+
+<div class="card">
+<img src="https://via.placeholder.com/60">
+<div>******</div>
+<div class="price">1.184,4 ₺</div>
+</div>
+
+</div>
+</div>
+
+<!-- ALERT -->
+<div class="alert">
+Sahte sitelere dikkat ediniz tek adres<br>
+<u>t2m.io/vayadres</u>
+</div>
+
+<!-- GAMES TITLE -->
+<div class="games-header">
+<h2>Bugünün Kazandıran Oyunları 🐻⚡</h2>
+</div>
+
+<!-- GAMES -->
+<div class="games">
+
+<div class="game">
+<img src="https://via.placeholder.com/140x140">
+<div class="rank">Top 1</div>
+<div class="rtp">101.2 RTP</div>
+</div>
+
+<div class="game">
+<img src="https://via.placeholder.com/140x140">
+<div class="rank">Top 2</div>
+<div class="rtp">100 RTP</div>
+</div>
+
+<div class="game">
+<img src="https://via.placeholder.com/140x140">
+<div class="rank">Top 3</div>
+<div class="rtp">100 RTP</div>
+</div>
+
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom">
+<div><span>🔍</span></div>
+<div><span>🎰</span>Canlı Casino</div>
+<div><span>V</span>Slot Oyna</div>
+<div><span>⚽</span>Bahis</div>
+<div><span>🎁</span>Promosyonlar</div>
+</div>
+
+</body>
+</html>
