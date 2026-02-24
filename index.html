@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Casino UI</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:#0f0f0f;
+    color:#fff;
+}
+
+/* HEADER */
+
+.header{
+    background:#000;
+    padding:15px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.logo{
+    font-size:26px;
+    font-weight:800;
+    color:#ff8c00;
+}
+
+.balance{
+    background:#1c1c1c;
+    padding:8px 14px;
+    border-radius:8px;
+    font-weight:600;
+}
+
+/* MENU */
+
+.top-menu{
+    display:flex;
+    overflow-x:auto;
+    background:#111;
+    padding:10px;
+    gap:15px;
+}
+
+.top-menu span{
+    white-space:nowrap;
+    font-size:14px;
+    opacity:.7;
+}
+
+.top-menu span.active{
+    color:#6aff6a;
+    font-weight:600;
+}
+
+/* HERO BANNER */
+
+.hero{
+    margin:15px;
+    border-radius:15px;
+    padding:20px;
+    background:linear-gradient(135deg,#1a1a1a,#2a2a2a);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.hero-text{
+    max-width:60%;
+}
+
+.hero h1{
+    font-size:22px;
+    font-weight:800;
+}
+
+.hero p{
+    margin-top:10px;
+    font-size:14px;
+    opacity:.8;
+}
+
+.hero button{
+    margin-top:15px;
+    padding:10px 18px;
+    border:none;
+    border-radius:20px;
+    background:#ff8c00;
+    color:#000;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.hero img{
+    width:120px;
+}
+
+/* SECTION */
+
+.section{
+    margin:20px 15px;
+}
+
+.section-header{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:10px;
+}
+
+.section-header h2{
+    font-size:16px;
+    font-weight:700;
+}
+
+.section-header span{
+    font-size:14px;
+    opacity:.6;
+}
+
+.card-row{
+    display:flex;
+    overflow-x:auto;
+    gap:12px;
+}
+
+.card{
+    min-width:160px;
+    height:100px;
+    border-radius:12px;
+    background:linear-gradient(135deg,#ff8c00,#ffb347);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:700;
+    color:#000;
+}
+
+/* BOTTOM NAV */
+
+.bottom-nav{
+    position:fixed;
+    bottom:0;
+    width:100%;
+    background:#000;
+    display:flex;
+    justify-content:space-around;
+    padding:10px 0;
+    border-top:1px solid #222;
+}
+
+.bottom-nav div{
+    font-size:12px;
+    text-align:center;
+    opacity:.7;
+}
+
+.bottom-nav div.active{
+    color:#ff8c00;
+    opacity:1;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <div class="logo">MARKAN</div>
+    <div class="balance">0.45 ₺</div>
+</div>
+
+<div class="top-menu">
+    <span class="active">Etkinlik Bonusları</span>
+    <span>Para Dönüştürme</span>
+    <span>Canlı Bahis</span>
+    <span>Casino</span>
+</div>
+
+<div class="hero">
+    <div class="hero-text">
+        <h1>Yeni Oyun Arenası Açıldı!</h1>
+        <p>Özel versiyonu ilk sen oyna.</p>
+        <button>Şimdi Oyna</button>
+    </div>
+    <img src="your-image.png" alt="">
+</div>
+
+<div class="section">
+    <div class="section-header">
+        <h2>ORIGINAL OYUNLAR</h2>
+        <span>Daha Fazlası ></span>
+    </div>
+    <div class="card-row">
+        <div class="card">Oyun 1</div>
+        <div class="card">Oyun 2</div>
+        <div class="card">Oyun 3</div>
+    </div>
+</div>
+
+<div class="section">
+    <div class="section-header">
+        <h2>CASINO OYUNLARI</h2>
+        <span>Daha Fazlası ></span>
+    </div>
+    <div class="card-row">
+        <div class="card">Slot 1</div>
+        <div class="card">Slot 2</div>
+        <div class="card">Slot 3</div>
+    </div>
+</div>
+
+<div class="bottom-nav">
+    <div>Canlı</div>
+    <div>Bahis</div>
+    <div class="active">Casino</div>
+    <div>Profil</div>
+    <div>Menü</div>
+</div>
+
+</body>
+</html>
