@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ProBet Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif}
+body{background:#0f0f0f;color:#fff}
+header{background:#000;padding:15px;display:flex;justify-content:space-between;align-items:center}
+.logo{color:#ff9900;font-size:22px;font-weight:800}
+.balance{background:#1c1c1c;padding:8px 15px;border-radius:8px}
+nav{display:flex;gap:20px;background:#111;padding:10px 15px}
+nav span{cursor:pointer;opacity:.7}
+nav span.active{color:#ff9900;opacity:1}
+.section{padding:20px}
+.match{background:#1a1a1a;margin-bottom:10px;padding:15px;border-radius:10px;display:flex;justify-content:space-between;align-items:center}
+.teams{font-weight:600}
+.odds button{margin-left:5px;padding:8px 12px;border:none;border-radius:6px;background:#222;color:#fff;cursor:pointer}
+.odds button:hover{background:#ff9900;color:#000}
+.coupon{position:fixed;right:0;top:0;width:280px;height:100%;background:#141414;padding:15px;border-left:1px solid #222}
+.coupon h3{margin-bottom:15px}
+.coupon-item{font-size:14px;margin-bottom:10px}
+.total{margin-top:10px;font-weight:700}
+.place-bet{margin-top:10px;width:100%;padding:10px;border:none;background:#ff9900;color:#000;font-weight:700;border-radius:6px;cursor:pointer}
+.slots{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.slot{background:#1a1a1a;padding:20px;border-radius:10px;text-align:center}
+.live{background:#8b0000;padding:20px;border-radius:10px;text-align:center}
+footer{position:fixed;bottom:0;width:100%;background:#000;padding:10px;text-align:center;font-size:12px}
+</style>
+</head>
+<body>
+
+<header>
+<div class="logo">PROBET</div>
+<div class="balance">Bakiye: <span id="balance">1000</span> ₺</div>
+</header>
+
+<nav>
+<span class="active" onclick="showSection('sports')">Spor</span>
+<span onclick="showSection('slots')">Slot</span>
+<span onclick="showSection('live')">Canlı Casino</span>
+</nav>
+
+<div class="section" id="sports">
+<h2>Popüler Maçlar</h2>
+
+<div class="match">
+<div class="teams">Galatasaray - Fenerbahçe</div>
+<div class="odds">
+<button onclick="addBet('GS',2.10)">2.10</button>
+<button onclick="addBet('X',3.40)">3.40</button>
+<button onclick="addBet('FB',2.80)">2.80</button>
+</div>
+</div>
+
+<div class="match">
+<div class="teams">Real Madrid - Barcelona</div>
+<div class="odds">
+<button onclick="addBet('RM',1.95)">1.95</button>
+<button onclick="addBet('X',3.60)">3.60</button>
+<button onclick="addBet('BAR',3.10)">3.10</button>
+</div>
+</div>
+
+</div>
+
+<div class="section" id="slots" style="display:none">
+<h2>Slot Oyunları</h2>
+<div class="slots">
+<div class="slot">Sweet Bonanza</div>
+<div class="slot">Gates of Olympus</div>
+<div class="slot">Book of Dead</div>
+<div class="slot">Big Bass Splash</div>
+</div>
+</div>
+
+<div class="section" id="live" style="display:none">
+<h2>Canlı Casino</h2>
+<div class="live">Canlı Rulet</div>
+<br>
+<div class="live">Canlı Blackjack</div>
+</div>
+
+<div class="coupon">
+<h3>Kupon</h3>
+<div id="coupon-list"></div>
+<div class="total">Toplam Oran: <span id="total-odds">1.00</span></div>
+<button class="place-bet" onclick="placeBet()">Bahis Yap (Demo)</button>
+</div>
+
+<footer>Demo Bahis Sistemi - Gerçek Para İçermez</footer>
+
+<script>
+let totalOdds=1;
+let balance=1000;
+
+function showSection(section){
+document.getElementById('sports').style.display='none';
+document.getElementById('slots').style.display='none';
+document.getElementById('live').style.display='none';
+document.getElementById(section).style.display='block';
+}
+
+function addBet(team,odd){
+let list=document.getElementById('coupon-list');
+let item=document.createElement('div');
+item.className='coupon-item';
+item.innerText=team+" @ "+odd;
+list.appendChild(item);
+totalOdds*=odd;
+document.getElementById('total-odds').innerText=totalOdds.toFixed(2);
+}
+
+function placeBet(){
+let stake=100;
+if(balance>=stake){
+balance-=stake;
+document.getElementById('balance').innerText=balance;
+alert("Demo bahis oynandı!");
+}else{
+alert("Yetersiz bakiye");
+}
+}
+</script>
+
+</body>
+</html>
