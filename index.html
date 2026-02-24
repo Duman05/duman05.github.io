@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ProBet Bahis</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif}
+body{background:#0f0f0f;color:#fff}
+header{background:#000;padding:15px;display:flex;justify-content:space-between;align-items:center}
+.logo{color:#ff9900;font-size:22px;font-weight:800}
+.balance{background:#1c1c1c;padding:8px 15px;border-radius:8px}
+nav{display:flex;gap:20px;background:#111;padding:10px 15px}
+nav span{cursor:pointer;opacity:.7}
+nav span.active{color:#ff9900;opacity:1}
+.section{padding:20px}
+.match{background:#1a1a1a;margin-bottom:10px;padding:15px;border-radius:10px;display:flex;justify-content:space-between;align-items:center}
+.odds button{margin-left:5px;padding:8px 12px;border:none;border-radius:6px;background:#222;color:#fff;cursor:pointer}
+.odds button:hover{background:#ff9900;color:#000}
+.coupon{position:fixed;right:0;top:0;width:280px;height:100%;background:#141414;padding:15px;border-left:1px solid #222;overflow:auto}
+.place-bet,.clear-bet{margin-top:10px;width:100%;padding:10px;border:none;background:#ff9900;color:#000;font-weight:700;border-radius:6px;cursor:pointer}
+.clear-bet{background:#444;color:#fff}
+.slots{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.slot,.live{background:#1a1a1a;padding:20px;border-radius:10px;text-align:center}
+.live{background:#8b0000}
+footer{position:fixed;bottom:0;width:100%;background:#000;padding:10px;text-align:center;font-size:12px}
+
+/* Modal */
+.modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);display:none;justify-content:center;align-items:center}
+.modal-content{background:#1a1a1a;padding:20px;border-radius:10px;width:300px}
+.modal input{width:100%;padding:8px;margin-bottom:10px;border:none;border-radius:6px}
+.modal button{width:100%;padding:10px;border:none;border-radius:6px;background:#ff9900;font-weight:700}
+
+/* Live Chat */
+.chat-btn{position:fixed;bottom:70px;right:20px;background:#ff9900;color:#000;padding:12px;border-radius:50%;cursor:pointer;font-weight:700}
+.chat-box{position:fixed;bottom:130px;right:20px;width:250px;background:#1a1a1a;border-radius:10px;display:none;flex-direction:column}
+.chat-messages{height:200px;overflow:auto;padding:10px;font-size:12px}
+.chat-input{display:flex}
+.chat-input input{flex:1;padding:8px;border:none}
+.chat-input button{padding:8px;border:none;background:#ff9900}
+</style>
+</head>
+<body>
+
+<header>
+<div class="logo">PROBET</div>
+<div>
+<span class="balance">Bakiye: <span id="balance">1000</span> ₺</span>
+<button onclick="openLogin()">Giriş</button>
+</div>
+</header>
+
+<nav>
+<span class="active" onclick="showSection('sports')">Spor</span>
+<span onclick="showSection('slots')">Slot</span>
+<span onclick="showSection('live')">Canlı Casino</span>
+<span onclick="showSection('history')">Geçmiş</span>
+</nav>
+
+<div class="section" id="sports">
+<h2>Popüler Maçlar</h2>
+
+<div class="match">
+<div>Galatasaray - Fenerbahçe</div>
+<div class="odds">
+<button onclick="addBet('GS',2.10)">2.10</button>
+<button onclick="addBet('X',3.40)">3.40</button>
+<button onclick="addBet('FB',2.80)">2.80</button>
+</div>
+</div>
+
+<div class="match">
+<div>Real Madrid - Barcelona</div>
+<div class="odds">
+<button onclick="addBet('RM',1.95)">1.95</button>
+<button onclick="addBet('X',3.60)">3.60</button>
+<button onclick="addBet('BAR',3.10)">3.10</button>
+</div>
+</div>
+</div>
+
+<div class="section" id="slots" style="display:none">
+<h2>Slot Oyunları</h2>
+<div class="slots">
+<div class="slot">Sweet Bonanza</div>
+<div class="slot">Gates of Olympus</div>
+<div class="slot">Book of Dead</div>
+<div class="slot">Big Bass Splash</div>
+</div>
+</div>
+
+<div class="section" id="live" style="display:none">
+<h2>Canlı Casino</h2>
+<div class="live">Canlı Rulet</div><br>
+<div class="live">Canlı Blackjack</div>
+</div>
+
+<div class="section" id="history" style="display:none">
+<h2>Bahis Geçmişi</h2>
+<div id="bet-history"></div>
+</div>
+
+<div class="coupon">
+<h3>Kupon</h3>
+<div id="coupon-list"></div>
+<div>Toplam Oran: <span id="total-odds">1.00</span></div>
+<button class="place-bet" onclick="placeBet()">Bahis Yap (Demo)</button>
+<button class="clear-bet" onclick="clearCoupon()">Temizle</button>
+</div>
+
+<!-- LOGIN MODAL -->
+<div class="modal" id="loginModal">
+<div class="modal-content">
+<h3>Giriş Yap</h3>
+<input placeholder="Kullanıcı Adı">
+<input type="password" placeholder="Şifre">
+<button onclick="closeLogin()">Giriş</button>
+</div>
+</div>
+
+<!-- LIVE CHAT -->
+<div class="chat-btn" onclick="toggleChat()">💬</div>
+<div class="chat-box" id="chatBox">
+<div class="chat-messages" id="chatMessages">
+<div>Destek: Merhaba 👋 Size nasıl yardımcı olabiliriz?</div>
+</div>
+<div class="chat-input">
+<input id="chatInput" placeholder="Mesaj yaz...">
+<button onclick="sendMessage()">Gönder</button>
+</div>
+</div>
+
+<footer>Demo Bahis Sistemi - Gerçek Para İçermez</footer>
+
+<script>
+let totalOdds=1;
+let balance=1000;
+
+function showSection(section){
+document.querySelectorAll('.section').forEach(s=>s.style.display='none');
+document.getElementById(section).style.display='block';
+}
+
+function addBet(team,odd){
+let list=document.getElementById('coupon-list');
+let item=document.createElement('div');
+item.innerText=team+" @ "+odd;
+list.appendChild(item);
+totalOdds*=odd;
+document.getElementById('total-odds').innerText=totalOdds.toFixed(2);
+}
+
+function placeBet(){
+let stake=100;
+if(balance>=stake){
+balance-=stake;
+document.getElementById('balance').innerText=balance;
+let history=document.getElementById('bet-history');
+let entry=document.createElement('div');
+entry.innerText="Bahis oynandı - Oran: "+totalOdds.toFixed(2);
+history.appendChild(entry);
+clearCoupon();
+alert("Demo bahis oynandı!");
+}else{alert("Yetersiz bakiye");}
+}
+
+function clearCoupon(){
+document.getElementById('coupon-list').innerHTML="";
+totalOdds=1;
+document.getElementById('total-odds').innerText="1.00";
+}
+
+function openLogin(){document.getElementById('loginModal').style.display='flex'}
+function closeLogin(){document.getElementById('loginModal').style.display='none'}
+
+function toggleChat(){
+let box=document.getElementById('chatBox');
+box.style.display=box.style.display==="flex"?"none":"flex";
+box.style.display="flex";
+}
+
+function sendMessage(){
+let input=document.getElementById('chatInput');
+if(input.value.trim()!==""){
+let msg=document.createElement('div');
+msg.innerText="Sen: "+input.value;
+document.getElementById('chatMessages').appendChild(msg);
+input.value="";
+}
+}
+</script>
+
+</body>
+  </html>
