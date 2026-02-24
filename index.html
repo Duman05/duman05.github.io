@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>3D Test</title>
+<style>
+body{margin:0;background:black;}
+</style>
+</head>
+<body>
+
+<script src="three.min.js"></script>
+
+<script>
+if(typeof THREE === "undefined"){
+  document.body.innerHTML = "<h1 style='color:red;text-align:center;margin-top:100px;'>THREE YÜKLENMEDİ</h1>";
+}else{
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 1000);
+  const renderer = new THREE.WebGLRenderer();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  document.body.appendChild(renderer.domElement);
+
+  const geometry = new THREE.BoxGeometry(5,5,5);
+  const material = new THREE.MeshBasicMaterial({color:0x00ff00});
+  const cube = new THREE.Mesh(geometry, material);
+  scene.add(cube);
+
+  camera.position.z = 10;
+
+  function animate(){
+    requestAnimationFrame(animate);
+    cube.rotation.x += 0.01;
+    cube.rotation.y += 0.01;
+    renderer.render(scene, camera);
+  }
+  animate();
+
+}
+</script>
+
+</body>
+</html>
