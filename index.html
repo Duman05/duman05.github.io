@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>DumanBet</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#0e0e0e;
+  color:white;
+}
+
+header{
+  background:#111;
+  padding:15px 30px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:2px solid gold;
+}
+
+.logo{
+  font-size:26px;
+  font-weight:bold;
+  color:gold;
+}
+
+nav button{
+  background:none;
+  border:none;
+  color:white;
+  margin:0 10px;
+  cursor:pointer;
+  font-size:15px;
+}
+
+nav button:hover{
+  color:gold;
+}
+
+.hero{
+  height:350px;
+  background:url('https://images.unsplash.com/photo-1596838132731-3301c3fd4317?auto=format&fit=crop&w=1600&q=80');
+  background-size:cover;
+  background-position:center;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
+
+.hero h1{
+  background:rgba(0,0,0,0.6);
+  padding:20px 40px;
+  border-radius:10px;
+  color:gold;
+  font-size:40px;
+}
+
+.section{
+  padding:40px 20px;
+}
+
+.games{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:20px;
+}
+
+.card{
+  background:#1a1a1a;
+  border-radius:10px;
+  overflow:hidden;
+  transition:0.3s;
+  border:1px solid #222;
+}
+
+.card:hover{
+  transform:scale(1.05);
+  border:1px solid gold;
+}
+
+.card img{
+  width:100%;
+  height:180px;
+  object-fit:cover;
+}
+
+.card button{
+  width:100%;
+  padding:10px;
+  background:gold;
+  border:none;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.panel{
+  background:#1a1a1a;
+  padding:20px;
+  border-radius:10px;
+  text-align:center;
+  margin-top:20px;
+}
+
+.balance{
+  color:gold;
+  font-size:18px;
+  margin:10px 0;
+}
+
+input{
+  padding:10px;
+  margin:5px;
+  width:250px;
+}
+
+button.main{
+  padding:8px 15px;
+  background:gold;
+  border:none;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.hidden{
+  display:none;
+}
+
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">DumanBet</div>
+  <nav>
+    <button onclick="showHome()">Ana Sayfa</button>
+    <button onclick="showSlot()">Slot</button>
+    <button onclick="showLive()">Canlı</button>
+    <button onclick="showSport()">Spor</button>
+    <button onclick="showAuth()">Giriş</button>
+  </nav>
+</header>
+
+<div class="hero">
+  <h1>Altın Kazanç Dünyası</h1>
+</div>
+
+<div id="home" class="section">
+  <h2>Öne Çıkan Oyunlar</h2>
+  <div class="games">
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1596838132731-3301c3fd4317?auto=format&fit=crop&w=800&q=80">
+      <button onclick="showSlot()">Slot Oyna</button>
+    </div>
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1518544889280-46e8eec89b0f?auto=format&fit=crop&w=800&q=80">
+      <button onclick="showLive()">Canlı Casino</button>
+    </div>
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=800&q=80">
+      <button onclick="showSport()">Spor</button>
+    </div>
+  </div>
+</div>
+
+<div id="slot" class="section hidden">
+  <h2>Slot Alanı</h2>
+  <p>Demo slot alanı burada açılır.</p>
+</div>
+
+<div id="live" class="section hidden">
+  <h2>Canlı Casino</h2>
+  <p>Demo canlı masa oyunları.</p>
+</div>
+
+<div id="sport" class="section hidden">
+  <h2>Spor Alanı</h2>
+  <p>Demo spor alanı.</p>
+</div>
+
+<div id="auth" class="section hidden">
+  <h2>Giriş / Kayıt</h2>
+  <input type="text" placeholder="İsim"><br>
+  <input type="text" placeholder="İkinci İsim"><br>
+  <input type="date"><br>
+  <input type="email" placeholder="E-posta"><br>
+  <input type="password" placeholder="Şifre"><br>
+  <button class="main">Kayıt Ol</button>
+  <button class="main">Giriş Yap</button>
+</div>
+
+<script>
+function hideAll(){
+  document.querySelectorAll(".section").forEach(s=>s.classList.add("hidden"));
+}
+
+function showHome(){ hideAll(); document.getElementById("home").classList.remove("hidden"); }
+function showSlot(){ hideAll(); document.getElementById("slot").classList.remove("hidden"); }
+function showLive(){ hideAll(); document.getElementById("live").classList.remove("hidden"); }
+function showSport(){ hideAll(); document.getElementById("sport").classList.remove("hidden"); }
+function showAuth(){ hideAll(); document.getElementById("auth").classList.remove("hidden"); }
+</script>
+
+</body>
+  </html>
