@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NASA Günün Fotoğrafı</title>
+<style>
+body{
+    margin:0;
+    background:black;
+    color:white;
+    font-family:Arial;
+    text-align:center;
+    padding:40px;
+}
+img{
+    max-width:90%;
+    border-radius:12px;
+    margin-top:20px;
+}
+</style>
+</head>
+<body>
+
+<h1>📸 NASA Günün Uzay Fotoğrafı</h1>
+<div id="content">Yükleniyor...</div>
+
+<script>
+fetch("https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY")
+.then(res => res.json())
+.then(data => {
+
+    if(data.media_type === "image"){
+        document.getElementById("content").innerHTML = `
+            <h2>${data.title}</h2>
+            <img src="${data.url}">
+            <p>${data.explanation}</p>
+        `;
+    } else {
+        document.getElementById("content").innerHTML = `
+            <h2>${data.title}</h2>
+            <iframe width="80%" height="400"
+                src="${data.url}"
+                frameborder="0"
+                allowfullscreen>
+            </iframe>
+            <p>${data.explanation}</p>
+        `;
+    }
+
+})
+.catch(() => {
+    document.getElementById("content").innerHTML =
+        "⚠️ Fotoğraf yüklenemedi.";
+});
+</script>
+
+</body>
+</html>
