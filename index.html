@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>DumanBet</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  font-family:Arial;
+  background:#111;
+  color:white;
+}
+
+header{
+  background:#1a1a1a;
+  padding:15px 30px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:2px solid gold;
+}
+
+.logo{
+  color:gold;
+  font-size:24px;
+  font-weight:bold;
+}
+
+nav button{
+  background:none;
+  border:none;
+  color:white;
+  margin:0 10px;
+  cursor:pointer;
+  font-size:15px;
+}
+
+nav button:hover{
+  color:gold;
+}
+
+.section{
+  display:none;
+  padding:30px;
+}
+
+input{
+  padding:10px;
+  margin:5px;
+  width:250px;
+}
+
+button.main{
+  padding:8px 15px;
+  background:gold;
+  border:none;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.balance{
+  color:gold;
+  margin:10px;
+  font-size:18px;
+}
+
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">DumanBet</div>
+  <nav>
+    <button onclick="showSection('home')">Ana Sayfa</button>
+    <button onclick="showSection('slot')">Slot</button>
+    <button onclick="showSection('live')">Canlı Casino</button>
+    <button onclick="showSection('sport')">Spor</button>
+    <button onclick="showSection('auth')">Giriş / Kayıt</button>
+  </nav>
+</header>
+
+<!-- ANA SAYFA -->
+<div id="home" class="section" style="display:block;">
+  <h2>Hoşgeldiniz</h2>
+  <p>Premium eğlence platformu</p>
+</div>
+
+<!-- SLOT -->
+<div id="slot" class="section">
+  <h2>Slot Alanı</h2>
+  <p>Slot oyunları burada gösterilecek.</p>
+</div>
+
+<!-- CANLI -->
+<div id="live" class="section">
+  <h2>Canlı Casino</h2>
+  <p>Canlı masa oyunları burada.</p>
+</div>
+
+<!-- SPOR -->
+<div id="sport" class="section">
+  <h2>Spor Alanı</h2>
+  <p>Spor karşılaşmaları burada.</p>
+</div>
+
+<!-- AUTH -->
+<div id="auth" class="section">
+  <h2>Kayıt Ol</h2>
+
+  <input type="text" id="name" placeholder="İsim"><br>
+  <input type="text" id="secondName" placeholder="İkinci İsim (isteğe bağlı)"><br>
+  <input type="date" id="birth"><br>
+  <input type="email" id="email"><br>
+  <input type="password" id="password" placeholder="Şifre"><br>
+
+  <button class="main" onclick="register()">Kayıt Ol</button>
+
+  <h3>Giriş Yap</h3>
+  <input type="email" id="loginEmail"><br>
+  <input type="password" id="loginPass" placeholder="Şifre"><br>
+  <button class="main" onclick="login()">Giriş Yap</button>
+</div>
+
+<!-- PANEL -->
+<div id="panel" class="section">
+  <h2 id="welcome"></h2>
+  <div class="balance">Bakiye: <span id="balance">0</span> ₺</div>
+  <button class="main" onclick="logout()">Çıkış Yap</button>
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAcywJ4bT_BvFntA53S9e1iM3Facr12qUo",
+  authDomain: "duman-site.firebaseapp.com",
+  projectId: "duman-site",
+  storageBucket: "duman-site.firebasestorage.app",
+  messagingSenderId: "208426888053",
+  appId: "1:208426888053:web:df7f8c364bc66ffef8813c"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+window.showSection = function(id){
+  document.querySelectorAll(".section").forEach(sec=>sec.style.display="none");
+  document.getElementById(id).style.display="block";
+}
+
+window.register = async function(){
+
+  const userCred = await createUserWithEmailAndPassword(
+    auth,
+    document.getElementById("email").value,
+    document.getElementById("password").value
+  );
+
+  await setDoc(doc(db,"users",userCred.user.uid),{
+    name: document.getElementById("name").value,
+    secondName: document.getElementById("secondName").value,
+    birth: document.getElementById("birth").value,
+    balance: 1000
+  });
+
+  alert("Kayıt başarılı. 1000₺ eklendi.");
+}
+
+window.login = function(){
+  signInWithEmailAndPassword(
+    auth,
+    document.getElementById("loginEmail").value,
+    document.getElementById("loginPass").value
+  );
+}
+
+window.logout = function(){
+  signOut(auth);
+}
+
+onAuthStateChanged(auth, async(user)=>{
+  if(user){
+    const snap = await getDoc(doc(db,"users",user.uid));
+    if(snap.exists()){
+      document.getElementById("welcome").innerText =
+        "Hoşgeldin " + snap.data().name;
+      document.getElementById("balance").innerText =
+        snap.data().balance;
+    }
+    showSection("panel");
+  } else {
+    showSection("home");
+  }
+});
+
+</script>
+
+</body>
+</html>
