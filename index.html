@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<body style="margin:0;background:black;">
+<canvas id="c"></canvas>
+
+<script>
+const canvas = document.getElementById("c");
+const gl = canvas.getContext("webgl");
+
+if(!gl){
+  document.body.innerHTML = "<h1 style='color:white;text-align:center;margin-top:100px;'>WEBGL DESTEKLENMİYOR</h1>";
+}else{
+  document.body.innerHTML = "<h1 style='color:lime;text-align:center;margin-top:100px;'>WEBGL ÇALIŞIYOR</h1>";
+}
+</script>
+
+</body>
+</html>
