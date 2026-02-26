@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Foto Editör</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:#0f0f0f;
+    color:white;
+    text-align:center;
+}
+
+.container{
+    padding:40px 20px;
+}
+
+h1{
+    font-size:28px;
+    margin-bottom:10px;
+}
+
+.upload-box{
+    border:2px dashed #444;
+    padding:30px;
+    margin:20px auto;
+    max-width:400px;
+    cursor:pointer;
+    border-radius:10px;
+}
+
+button{
+    background:#00ff99;
+    border:none;
+    padding:12px 20px;
+    margin-top:15px;
+    border-radius:8px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+img{
+    margin-top:20px;
+    max-width:300px;
+    border-radius:10px;
+}
+
+footer{
+    margin-top:50px;
+    color:#888;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>🤖 AI Fotoğraf Düzenleyici</h1>
+    <p>Fotoğraf yükle, arka planı kaldır veya netleştir</p>
+
+    <div class="upload-box" onclick="document.getElementById('fileInput').click()">
+        📂 Fotoğraf Yüklemek İçin Tıkla
+        <input type="file" id="fileInput" hidden accept="image/*">
+    </div>
+
+    <img id="preview" />
+
+    <br>
+    <button onclick="removeBg()">Arka Planı Kaldır (Demo)</button>
+</div>
+
+<footer>
+© 2026 AI Editör
+</footer>
+
+<script>
+const fileInput = document.getElementById("fileInput");
+const preview = document.getElementById("preview");
+
+fileInput.addEventListener("change", function(){
+    const file = this.files[0];
+    if(file){
+        const reader = new FileReader();
+        reader.onload = function(e){
+            preview.src = e.target.result;
+        }
+        reader.readAsDataURL(file);
+    }
+});
+
+function removeBg(){
+    alert("Gerçek AI entegrasyonu için API bağlamamız gerekiyor 🔥");
+}
+</script>
+
+</body>
+</html>
