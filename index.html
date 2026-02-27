@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Benim Dijital Evrenim</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Orbitron', sans-serif;
+}
+
+body {
+    background: radial-gradient(circle at center, #0f2027, #203a43, #2c5364);
+    color: white;
+    overflow: hidden;
+    height: 100vh;
+}
+
+canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 0;
+}
+
+.content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+h1 {
+    font-size: 3rem;
+    letter-spacing: 4px;
+    animation: glow 2s infinite alternate;
+}
+
+p {
+    margin-top: 20px;
+    font-size: 1.2rem;
+    opacity: 0.8;
+}
+
+button {
+    margin-top: 40px;
+    padding: 15px 40px;
+    border: none;
+    border-radius: 50px;
+    background: linear-gradient(45deg, #ff00cc, #3333ff);
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.4s;
+}
+
+button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px #ff00cc;
+}
+
+@keyframes glow {
+    from { text-shadow: 0 0 10px #00f, 0 0 20px #00f; }
+    to { text-shadow: 0 0 20px #ff00cc, 0 0 40px #ff00cc; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="stars"></canvas>
+
+<div class="content">
+    <h1>🚀 BENİM DİJİTAL EVRENİM</h1>
+    <p>Bu site sıfırdan üretildi. İlk kod, ilk adım, büyük başlangıç.</p>
+    <button onclick="changeUniverse()">Evreni Değiştir</button>
+</div>
+
+<script>
+const canvas = document.getElementById("stars");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let stars = [];
+
+for (let i = 0; i < 200; i++) {
+    stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * 2,
+        velocity: Math.random() * 0.5
+    });
+}
+
+function drawStars() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "white";
+    stars.forEach(star => {
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        ctx.fill();
+        star.y += star.velocity;
+        if (star.y > canvas.height) {
+            star.y = 0;
+        }
+    });
+    requestAnimationFrame(drawStars);
+}
+
+drawStars();
+
+function changeUniverse() {
+    document.body.style.background = 
+        `radial-gradient(circle at center, 
+        hsl(${Math.random()*360}, 70%, 20%), 
+        hsl(${Math.random()*360}, 70%, 15%), 
+        hsl(${Math.random()*360}, 70%, 25%))`;
+}
+</script>
+
+</body>
+</html>
