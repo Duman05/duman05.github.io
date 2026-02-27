@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>NASA 3D Solar System</title>
+<style>
+body { margin:0; overflow:hidden; background:black; }
+</style>
+</head>
+<body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/controls/OrbitControls.js"></script>
+
+<script>
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 5000);
+camera.position.set(0,30,90);
+
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(window.innerWidth,window.innerHeight);
+renderer.setPixelRatio(window.devicePixelRatio);
+document.body.appendChild(renderer.domElement);
+
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+
+// IŞIK (Güneş merkezli)
+const sunLight = new THREE.PointLight(0xffffff, 3, 2000);
+scene.add(sunLight);
+
+// TEXTURE LOADER
+const loader = new THREE.TextureLoader();
+
+// 🌌 SPACE BACKGROUND
+loader.load(
+'https://threejsfundamentals.org/threejs/resources/images/starfield.jpg',
+function(texture){
+scene.background = texture;
+}
+);
+
+// ☀️ GÜNEŞ
+const sunTexture = loader.load('https://threejsfundamentals.org/threejs/resources/images/sun.jpg');
+const sun = new THREE.Mesh(
+new THREE.SphereGeometry(10,64,64),
+new THREE.MeshBasicMaterial({map:sunTexture})
+);
+scene.add(sun);
+
+// 🌍 DÜNYA
+const earthTexture = loader.load('https://threejsfundamentals.org/threejs/resources/images/earth-day.jpg');
+const earth = new THREE.Mesh(
+new THREE.SphereGeometry(4,64,64),
+new THREE.MeshStandardMaterial({map:earthTexture})
+);
+earth.position.x = 30;
+
+const earthOrbit = new THREE.Object3D();
+earthOrbit.add(earth);
+scene.add(earthOrbit);
+
+// 🌙 AY
+const moonTexture = loader.load('https://threejsfundamentals.org/threejs/resources/images/moon.jpg');
+const moon = new THREE.Mesh(
+new THREE.SphereGeometry(1,32,32),
+new THREE.MeshStandardMaterial({map:moonTexture})
+);
+moon.position.x = 8;
+
+const moonOrbit = new THREE.Object3D();
+moonOrbit.add(moon);
+earth.add(moonOrbit);
+
+// 🪐 SATÜRN
+const saturnTexture = loader.load('https://threejsfundamentals.org/threejs/resources/images/saturn.jpg');
+const saturn = new THREE.Mesh(
+new THREE.SphereGeometry(7,64,64),
+new THREE.MeshStandardMaterial({map:saturnTexture})
+);
+saturn.position.x = 70;
+
+const saturnOrbit = new THREE.Object3D();
+saturnOrbit.add(saturn);
+scene.add(saturnOrbit);
+
+// SATÜRN HALKASI
+const ringTexture = loader.load('https://threejsfundamentals.org/threejs/resources/images/saturnringcolor.jpg');
+const ring = new THREE.Mesh(
+new THREE.RingGeometry(9,14,64),
+new THREE.MeshBasicMaterial({map:ringTexture, side:THREE.DoubleSide, transparent:true})
+);
+ring.rotation.x = Math.PI / 2;
+saturn.add(ring);
+
+// ⭐ YILDIZ PARÇACIKLARI
+function createStars(){
+const geometry = new THREE.BufferGeometry();
+const vertices=[];
+for(let i=0;i<10000;i++){
+vertices.push(
+THREE.MathUtils.randFloatSpread(3000),
+THREE.MathUtils.randFloatSpread(3000),
+THREE.MathUtils.randFloatSpread(3000)
+);
+}
+geometry.setAttribute('position',
+new THREE.Float32BufferAttribute(vertices,3));
+const material=new THREE.PointsMaterial({size:1});
+const stars=new THREE.Points(geometry,material);
+scene.add(stars);
+}
+createStars();
+
+// 🎥 ANİMASYON
+function animate(){
+requestAnimationFrame(animate);
+
+earthOrbit.rotation.y += 0.005;
+earth.rotation.y += 0.02;
+
+moonOrbit.rotation.y += 0.02;
+saturnOrbit.rotation.y += 0.002;
+
+controls.update();
+renderer.render(scene,camera);
+}
+animate();
+
+// RESPONSIVE
+window.addEventListener('resize',()=>{
+camera.aspect=window.innerWidth/window.innerHeight;
+camera.updateProjectionMatrix();
+renderer.setSize(window.innerWidth,window.innerHeight);
+});
+</script>
+
+</body>
+</html>
