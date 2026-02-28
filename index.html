@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mini Silah Oyunu</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: black;
+            color: white;
+            font-family: Arial;
+        }
+        canvas {
+            display: block;
+            margin: auto;
+            background: #111;
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="gameCanvas" width="500" height="600"></canvas>
+
+<script>
+let canvas = document.getElementById("gameCanvas");
+let ctx = canvas.getContext("2d");
+
+let player = {
+    x: 230,
+    y: 550,
+    width: 40,
+    height: 40
+};
+
+let bullets = [];
+let enemies = [];
+let score = 0;
+
+function spawnEnemy() {
+    enemies.push({
+        x: Math.random() * 460,
+        y: 0,
+        width: 40,
+        height: 40,
+        speed: 2
+    });
+}
+
+setInterval(spawnEnemy, 1000);
+
+document.addEventListener("keydown", function(e) {
+    if (e.code === "ArrowLeft") player.x -= 20;
+    if (e.code === "ArrowRight") player.x += 20;
+    if (e.code === "Space") {
+        bullets.push({
+            x: player.x + 18,
+            y: player.y,
+            width: 5,
+            height: 10,
+            speed: 5
+        });
+    }
+});
+
+function update() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Oyuncu
+    ctx.fillStyle = "cyan";
+    ctx.fillRect(player.x, player.y, player.width, player.height);
+
+    // Mermiler
+    ctx.fillStyle = "yellow";
+    bullets.forEach((bullet, bIndex) => {
+        bullet.y -= bullet.speed;
+        ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
+
+        if (bullet.y < 0) bullets.splice(bIndex, 1);
+    });
+
+    // Düşmanlar
+    ctx.fillStyle = "red";
+    enemies.forEach((enemy, eIndex) => {
+        enemy.y += enemy.speed;
+        ctx.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
+
+        // Çarpışma kontrolü
+        bullets.forEach((bullet, bIndex) => {
+            if (
+                bullet.x < enemy.x + enemy.width &&
+                bullet.x + bullet.width > enemy.x &&
+                bullet.y < enemy.y + enemy.height &&
+                bullet.y + bullet.height > enemy.y
+            ) {
+                enemies.splice(eIndex, 1);
+                bullets.splice(bIndex, 1);
+                score++;
+            }
+        });
+
+        if (enemy.y > canvas.height) {
+            enemies.splice(eIndex, 1);
+        }
+    });
+
+    ctx.fillStyle = "white";
+    ctx.fillText("Puan: " + score, 10, 20);
+
+    requestAnimationFrame(update);
+}
+
+update();
+</script>
+
+</body>
+</html>
