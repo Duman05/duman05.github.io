@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Mobile Arena</title>
+<style>
+body { margin:0; overflow:hidden; background:black; }
+canvas { background:#111; display:block; }
+#shootBtn {
+  position:absolute;
+  right:20px;
+  bottom:40px;
+  width:80px;
+  height:80px;
+  border-radius:50%;
+  background:red;
+  opacity:0.7;
+}
+#weaponUI {
+  position:absolute;
+  top:10px;
+  left:10px;
+  color:white;
+  font-family:Arial;
+}
+</style>
+</head>
+<body>
+
+<canvas id="game"></canvas>
+<div id="shootBtn"></div>
+<div id="weaponUI">Silah: Pistol</div>
+
+<script>
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let player = {
+  x: canvas.width/2,
+  y: canvas.height/2,
+  health: 100,
+  score: 0,
+  weapon: "pistol"
+};
+
+let bots = [];
+let bullets = [];
+
+function spawnBot(){
+  bots.push({
+    x: Math.random()*canvas.width,
+    y: Math.random()*canvas.height,
+    health: 100
+  });
+}
+
+for(let i=0;i<5;i++) spawnBot();
+
+let joystick = { active:false, x:0, y:0 };
+
+canvas.addEventListener("touchstart", e=>{
+  joystick.active = true;
+  joystick.x = e.touches[0].clientX;
+  joystick.y = e.touches[0].clientY;
+});
+
+canvas.addEventListener("touchmove", e=>{
+  if(!joystick.active) return;
+  let dx = e.touches[0].clientX - joystick.x;
+  let dy = e.touches[0].clientY - joystick.y;
+  player.x += dx*0.05;
+  player.y += dy*0.05;
+  joystick.x = e.touches[0].clientX;
+  joystick.y = e.touches[0].clientY;
+});
+
+canvas.addEventListener("touchend", ()=>{
+  joystick.active=false;
+});
+
+document.getElementById("shootBtn").addEventListener("touchstart", ()=>{
+  shoot();
+});
+
+function shoot(){
+  let angle = Math.random()*Math.PI*2;
+  if(player.weapon==="pistol")
+    bullets.push(makeBullet(angle,20));
+  if(player.weapon==="shotgun"){
+    for(let i=-1;i<=1;i++)
+      bullets.push(makeBullet(angle+i*0.2,15));
+  }
+  if(player.weapon==="sniper")
+    bullets.push(makeBullet(angle,40,60));
+}
+
+function makeBullet(angle,speed,damage=25){
+  return {
+    x:player.x,
+    y:player.y,
+    dx:Math.cos(angle),
+    dy:Math.sin(angle),
+    speed,
+    damage
+  };
+}
+
+function update(){
+  bots.forEach(bot=>{
+    let dx=player.x-bot.x;
+    let dy=player.y-bot.y;
+    let dist=Math.sqrt(dx*dx+dy*dy);
+    bot.x+=dx/dist*1.5;
+    bot.y+=dy/dist*1.5;
+
+    if(dist<20){
+      player.health-=0.5;
+    }
+  });
+
+  bullets.forEach((b,i)=>{
+    b.x+=b.dx*b.speed*0.1;
+    b.y+=b.dy*b.speed*0.1;
+
+    bots.forEach((bot,j)=>{
+      let dx=bot.x-b.x;
+      let dy=bot.y-b.y;
+      if(Math.sqrt(dx*dx+dy*dy)<20){
+        bot.health-=b.damage;
+        bullets.splice(i,1);
+        if(bot.health<=0){
+          bots.splice(j,1);
+          player.score++;
+          spawnBot();
+        }
+      }
+    });
+  });
+
+  if(player.health<=0){
+    alert("GAME OVER\nSkor: "+player.score);
+    location.reload();
+  }
+}
+
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  ctx.fillStyle="cyan";
+  ctx.beginPath();
+  ctx.arc(player.x,player.y,20,0,Math.PI*2);
+  ctx.fill();
+
+  ctx.fillStyle="orange";
+  bots.forEach(bot=>{
+    ctx.beginPath();
+    ctx.arc(bot.x,bot.y,20,0,Math.PI*2);
+    ctx.fill();
+  });
+
+  ctx.fillStyle="yellow";
+  bullets.forEach(b=>{
+    ctx.beginPath();
+    ctx.arc(b.x,b.y,5,0,Math.PI*2);
+    ctx.fill();
+  });
+
+  ctx.fillStyle="white";
+  ctx.fillText("Can: "+Math.floor(player.health),10,20);
+  ctx.fillText("Skor: "+player.score,10,40);
+
+  update();
+  requestAnimationFrame(draw);
+}
+
+draw();
+
+window.addEventListener("keydown",e=>{
+  if(e.key==="1") player.weapon="pistol";
+  if(e.key==="2") player.weapon="shotgun";
+  if(e.key==="3") player.weapon="sniper";
+  document.getElementById("weaponUI").innerText="Silah: "+player.weapon;
+});
+</script>
+</body>
+</html>
