@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Slide Trap Game</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{margin:0;overflow:hidden;background:#222;}
+canvas{display:block;background:#eee;}
+</style>
+</head>
+<body>
+
+<canvas id="game"></canvas>
+
+<script>
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const tile = 60;
+const rows = 10;
+const cols = 6;
+
+let map = [
+[1,1,1,1,1,1],
+[1,0,0,0,0,1],
+[1,0,2,0,0,1],
+[1,0,0,0,3,1],
+[1,0,0,0,0,1],
+[1,4,0,5,0,1],
+[1,0,0,0,0,1],
+[1,0,0,0,0,1],
+[1,0,0,0,6,1],
+[1,1,1,1,1,1]
+];
+
+/*
+0 = boş
+1 = duvar
+2 = diken
+3 = sayı bloğu (3 can)
+4 = sayı bloğu (2 can)
+5 = sayı bloğu (5 can)
+6 = çıkış
+*/
+
+let player = {row:1,col:1,moving:false,dx:0,dy:0};
+
+let startX=0,startY=0;
+
+canvas.addEventListener("touchstart",e=>{
+  startX=e.touches[0].clientX;
+  startY=e.touches[0].clientY;
+});
+
+canvas.addEventListener("touchend",e=>{
+  let dx=e.changedTouches[0].clientX-startX;
+  let dy=e.changedTouches[0].clientY-startY;
+
+  if(Math.abs(dx)>Math.abs(dy)){
+    if(dx>30) move(1,0);
+    if(dx<-30) move(-1,0);
+  }else{
+    if(dy>30) move(0,1);
+    if(dy<-30) move(0,-1);
+  }
+});
+
+function move(dx,dy){
+  if(player.moving) return;
+  player.dx=dx;
+  player.dy=dy;
+  player.moving=true;
+}
+
+function update(){
+  if(player.moving){
+    let nextRow=player.row+player.dy;
+    let nextCol=player.col+player.dx;
+
+    let cell=map[nextRow][nextCol];
+
+    if(cell===0){
+      player.row=nextRow;
+      player.col=nextCol;
+    }
+    else if(cell===1){
+      player.moving=false;
+    }
+    else if(cell===2){
+      alert("Dikene battın!");
+      location.reload();
+    }
+    else if(cell>=3 && cell<=5){
+      map[nextRow][nextCol]--;
+      if(map[nextRow][nextCol]===2) map[nextRow][nextCol]=0;
+      player.moving=false;
+    }
+    else if(cell===6){
+      alert("Kazandın!");
+      location.reload();
+    }
+  }
+}
+
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  for(let r=0;r<rows;r++){
+    for(let c=0;c<cols;c++){
+      let x=c*tile+50;
+      let y=r*tile+50;
+
+      if(map[r][c]===1){
+        ctx.fillStyle="#b07a3f";
+        ctx.fillRect(x,y,tile,tile);
+      }
+      if(map[r][c]===2){
+        ctx.fillStyle="red";
+        ctx.fillRect(x,y,tile,tile);
+      }
+      if(map[r][c]>=3 && map[r][c]<=5){
+        ctx.fillStyle="#aaa";
+        ctx.fillRect(x,y,tile,tile);
+        ctx.fillStyle="black";
+        ctx.fillText(map[r][c],x+25,y+35);
+      }
+      if(map[r][c]===6){
+        ctx.fillStyle="green";
+        ctx.fillRect(x,y,tile,tile);
+      }
+    }
+  }
+
+  ctx.fillStyle="blue";
+  ctx.fillRect(player.col*tile+50,player.row*tile+50,tile,tile);
+
+  update();
+  requestAnimationFrame(draw);
+}
+
+draw();
+</script>
+
+</body>
+</html>
