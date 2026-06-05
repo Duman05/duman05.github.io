@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Duman İzle</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
+body{background:#08080d;color:white}
+header{background:#111827;padding:18px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.logo{font-size:28px;font-weight:bold;color:#facc15}
+nav button,.btn{background:#facc15;color:#111;border:none;padding:11px 17px;border-radius:20px;font-weight:bold;cursor:pointer}
+.search{padding:20px;text-align:center;background:#0f172a}
+.search input{width:95%;max-width:600px;padding:15px;border:none;border-radius:30px;background:#1f2937;color:white}
+.hero{padding:40px 20px;background:linear-gradient(135deg,#1e1b4b,#111827);text-align:center}
+.hero h1{font-size:38px;color:#facc15}
+.hero p{color:#ddd;margin-top:10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:20px;padding:25px}
+.card{background:#1f2937;border-radius:18px;overflow:hidden;transition:.3s}
+.card:hover{transform:scale(1.04)}
+.poster{height:260px;background:linear-gradient(135deg,#facc15,#7c2d12);display:flex;align-items:center;justify-content:center;font-size:70px}
+.info{padding:15px}
+.info p{color:#aaa;font-size:14px;margin:7px 0}
+.rating{color:#facc15;margin:8px 0}
+.watch{display:none;padding:25px;background:#111827}
+video{width:100%;max-height:450px;background:#000;border-radius:15px}
+.panel{margin:20px;padding:20px;background:#111827;border-radius:18px}
+input,select{width:100%;padding:12px;margin:7px 0;border:none;border-radius:10px}
+.likeBox{background:#1f2937;padding:15px;border-radius:15px;margin-top:15px}
+.small{color:#aaa;font-size:14px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Duman İzle</div>
+  <nav>
+    <button onclick="filterCat('Tümü')">Tümü</button>
+    <button onclick="filterCat('Aksiyon')">Aksiyon</button>
+    <button onclick="filterCat('Dram')">Dram</button>
+    <button onclick="filterCat('Komedi')">Komedi</button>
+  </nav>
+</header>
+
+<section class="hero">
+  <h1>Film ve Dizi Arşivi</h1>
+  <p>İzle, puanla, beğen ve kimlerin beğendiğini gör.</p>
+</section>
+
+<div class="search">
+  <input id="search" placeholder="Film veya dizi ara..." onkeyup="render()">
+</div>
+
+<div class="grid" id="list"></div>
+
+<section class="watch" id="watchBox">
+  <h2 id="watchTitle"></h2><br>
+  <video id="player" controls></video>
+
+  <div class="likeBox">
+    <h3>Puan Ver</h3>
+    <input id="userName" placeholder="Adını yaz">
+    <select id="score">
+      <option value="5">5 yıldız</option>
+      <option value="4">4 yıldız</option>
+      <option value="3">3 yıldız</option>
+      <option value="2">2 yıldız</option>
+      <option value="1">1 yıldız</option>
+    </select>
+    <button class="btn" onclick="rateMovie()">Puanla ve Beğen</button>
+    <p id="likeInfo" class="small"></p>
+  </div>
+</section>
+
+<div class="panel">
+  <h2>Admin Panel</h2>
+  <input type="password" id="adminPass" placeholder="Admin şifresi">
+  <button class="btn" onclick="adminLogin()">Giriş Yap</button>
+
+  <div id="adminArea" style="display:none;margin-top:15px">
+    <input id="movieName" placeholder="Film/Dizi adı">
+    <input id="movieDesc" placeholder="Açıklama">
+    <select id="movieCat">
+      <option>Aksiyon</option>
+      <option>Dram</option>
+      <option>Komedi</option>
+      <option>Korku</option>
+    </select>
+    <input id="movieUrl" placeholder="Video yolu: videolar/film.mp4">
+    <button class="btn" onclick="addMovie()">İçerik Ekle</button>
+  </div>
+</div>
+
+<script>
+const ADMIN_PASSWORD="12345";
+let selectedMovie=null;
+let currentCategory="Tümü";
+
+let movies=JSON.parse(localStorage.getItem("movies")) || [
+  {name:"Efsane Başlangıç",desc:"Aksiyon dolu hikaye",cat:"Aksiyon",url:"videolar/film1.mp4",icon:"🎬",ratings:[]},
+  {name:"Gece Yolculuğu",desc:"Dram ve macera",cat:"Dram",url:"videolar/film2.mp4",icon:"🔥",ratings:[]},
+  {name:"Komik Günler",desc:"Eğlenceli aile filmi",cat:"Komedi",url:"videolar/film3.mp4",icon:"🍿",ratings:[]}
+];
+
+function save(){
+  localStorage.setItem("movies",JSON.stringify(movies));
+}
+
+function avg(m){
+  if(m.ratings.length===0) return "Puan yok";
+  let total=m.ratings.reduce((a,b)=>a+Number(b.score),0);
+  return (total/m.ratings.length).toFixed(1)+" / 5";
+}
+
+function render(){
+  const q=document.getElementById("search").value.toLowerCase();
+  const list=document.getElementById("list");
+  list.innerHTML="";
+
+  movies.forEach((m,i)=>{
+    if(currentCategory!=="Tümü" && m.cat!==currentCategory) return;
+    if(!m.name.toLowerCase().includes(q)) return;
+
+    list.innerHTML+=`
+      <div class="card">
+        <div class="poster">${m.icon}</div>
+        <div class="info">
+          <h3>${m.name}</h3>
+          <p>${m.desc}</p>
+          <p>Kategori: ${m.cat}</p>
+          <div class="rating">⭐ ${avg(m)}</div>
+          <p>${m.ratings.length} kişi beğendi</p>
+          <button class="btn" onclick="openMovie(${i})">İzle</button>
+        </div>
+      </div>
+    `;
+  });
+}
+
+function filterCat(cat){
+  currentCategory=cat;
+  render();
+}
+
+function openMovie(i){
+  selectedMovie=i;
+  const m=movies[i];
+
+  document.getElementById("watchBox").style.display="block";
+  document.getElementById("watchTitle").innerText=m.name;
+  document.getElementById("player").src=m.url;
+
+  showLikes();
+  window.scrollTo(0,document.getElementById("watchBox").offsetTop);
+}
+
+function rateMovie(){
+  if(selectedMovie===null) return;
+
+  const name=document.getElementById("userName").value.trim();
+  const score=document.getElementById("score").value;
+
+  if(!name){
+    alert("Adını yaz");
+    return;
+  }
+
+  let m=movies[selectedMovie];
+  let old=m.ratings.find(r=>r.name.toLowerCase()===name.toLowerCase());
+
+  if(old){
+    old.score=score;
+  }else{
+    m.ratings.push({name,score});
+  }
+
+  save();
+  render();
+  showLikes();
+}
+
+function showLikes(){
+  const m=movies[selectedMovie];
+  let names=m.ratings.map(r=>`${r.name} (${r.score}⭐)`).join(", ");
+
+  document.getElementById("likeInfo").innerHTML=
+  `<b>${m.ratings.length} kişi beğendi</b><br>
+   Ortalama puan: ${avg(m)}<br>
+   Beğenenler: ${names || "Henüz kimse beğenmedi"}`;
+}
+
+function adminLogin(){
+  if(document.getElementById("adminPass").value===ADMIN_PASSWORD){
+    document.getElementById("adminArea").style.display="block";
+  }else{
+    alert("Şifre yanlış");
+  }
+}
+
+function addMovie(){
+  const name=document.getElementById("movieName").value;
+  const desc=document.getElementById("movieDesc").value;
+  const cat=document.getElementById("movieCat").value;
+  const url=document.getElementById("movieUrl").value;
+
+  if(!name || !desc || !url){
+    alert("Tüm alanları doldur");
+    return;
+  }
+
+  movies.push({name,desc,cat,url,icon:"🎥",ratings:[]});
+  save();
+  render();
+  alert("İçerik eklendi");
+}
+
+render();
+</script>
+
+</body>
+</html>
