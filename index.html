@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Duman Demo Site</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+    body { background: #111; color: white; }
+
+    header {
+      background: #1b1b1b;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid gold;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      color: gold;
+    }
+
+    .buttons button {
+      border: none;
+      padding: 10px 16px;
+      margin-left: 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .login { background: #333; color: white; }
+    .register { background: gold; color: black; }
+
+    .hero {
+      padding: 60px 20px;
+      text-align: center;
+      background: linear-gradient(135deg, #3b2200, #111);
+    }
+
+    .hero h1 {
+      font-size: 36px;
+      color: gold;
+      margin-bottom: 15px;
+    }
+
+    .hero p {
+      color: #ddd;
+      margin-bottom: 25px;
+    }
+
+    .hero button {
+      background: gold;
+      border: none;
+      padding: 14px 25px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .section {
+      padding: 30px 15px;
+    }
+
+    .section h2 {
+      margin-bottom: 20px;
+      color: gold;
+      text-align: center;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+    }
+
+    .card {
+      background: #1d1d1d;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      border: 1px solid #333;
+      transition: 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      border-color: gold;
+    }
+
+    .icon {
+      font-size: 40px;
+      margin-bottom: 10px;
+    }
+
+    footer {
+      background: #0b0b0b;
+      color: #aaa;
+      text-align: center;
+      padding: 20px;
+      margin-top: 30px;
+      font-size: 14px;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-box {
+      background: #222;
+      padding: 25px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 350px;
+      border: 1px solid gold;
+    }
+
+    .modal-box h3 {
+      color: gold;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .modal-box input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 10px;
+      border: none;
+      border-radius: 6px;
+    }
+
+    .modal-box button {
+      width: 100%;
+      padding: 12px;
+      background: gold;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close {
+      margin-top: 10px;
+      background: #444 !important;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">DUMAN DEMO</div>
+  <div class="buttons">
+    <button class="login" onclick="openModal('loginModal')">Giriş</button>
+    <button class="register" onclick="openModal('registerModal')">Kayıt</button>
+  </div>
+</header>
+
+<section class="hero">
+  <h1>Modern Demo Platform</h1>
+  <p>Bu sayfa sadece HTML, CSS ve JavaScript öğrenmek için hazırlanmış demo arayüzdür.</p>
+  <button onclick="alert('Bu sadece demo butondur.')">Demo Başlat</button>
+</section>
+
+<section class="section">
+  <h2>Kategoriler</h2>
+  <div class="cards">
+    <div class="card">
+      <div class="icon">🎮</div>
+      <h3>Oyunlar</h3>
+      <p>Demo kart alanı</p>
+    </div>
+
+    <div class="card">
+      <div class="icon">⭐</div>
+      <h3>Popüler</h3>
+      <p>Örnek içerik</p>
+    </div>
+
+    <div class="card">
+      <div class="icon">🎁</div>
+      <h3>Kampanya</h3>
+      <p>Tanıtım alanı</p>
+    </div>
+
+    <div class="card">
+      <div class="icon">📱</div>
+      <h3>Mobil</h3>
+      <p>Uyumlu tasarım</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  © 2026 Duman Demo. Bu site eğitim amaçlıdır. Gerçek işlem içermez.
+</footer>
+
+<div class="modal" id="loginModal">
+  <div class="modal-box">
+    <h3>Demo Giriş</h3>
+    <input type="text" placeholder="Kullanıcı adı">
+    <input type="password" placeholder="Şifre">
+    <button onclick="alert('Demo giriş çalıştı.')">Giriş Yap</button>
+    <button class="close" onclick="closeModal('loginModal')">Kapat</button>
+  </div>
+</div>
+
+<div class="modal" id="registerModal">
+  <div class="modal-box">
+    <h3>Demo Kayıt</h3>
+    <input type="text" placeholder="Ad soyad">
+    <input type="email" placeholder="E-posta">
+    <input type="password" placeholder="Şifre">
+    <button onclick="alert('Demo kayıt çalıştı.')">Kayıt Ol</button>
+    <button class="close" onclick="closeModal('registerModal')">Kapat</button>
+  </div>
+</div>
+
+<script>
+  function openModal(id) {
+    document.getElementById(id).style.display = "flex";
+  }
+
+  function closeModal(id) {
+    document.getElementById(id).style.display = "none";
+  }
+</script>
+
+</body>
+</html>
