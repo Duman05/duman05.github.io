@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DumanFlix</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
+body{background:#080808;color:white}
+header{background:#111;padding:18px;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:28px;font-weight:bold;color:#e50914}
+button{background:#e50914;color:white;border:none;padding:10px 15px;border-radius:8px;font-weight:bold}
+.hero{padding:35px 20px;background:linear-gradient(135deg,#250000,#111)}
+.hero h1{font-size:38px}
+.search{padding:15px}
+.search input,.admin input{width:100%;padding:13px;border:none;border-radius:8px;margin:6px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:18px;padding:20px}
+.card{background:#1b1b1b;border-radius:14px;overflow:hidden}
+.card img{width:100%;height:230px;object-fit:cover;background:#333}
+.info{padding:12px}
+.info p{color:#aaa;font-size:14px;margin:6px 0}
+.watch{display:none;padding:20px;background:#111}
+video{width:100%;max-height:430px;background:#000;border-radius:12px}
+.admin{background:#181818;margin:20px;padding:18px;border-radius:14px}
+.rating{margin-top:12px;background:#222;padding:12px;border-radius:10px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">DumanFlix</div>
+  <button onclick="showAdmin()">Admin</button>
+</header>
+
+<section class="hero">
+  <h1>Film ve Dizi Arşivi</h1>
+  <p>İzle, puanla ve beğenenleri gör.</p>
+</section>
+
+<div class="search">
+  <input id="search" placeholder="Film ara..." onkeyup="renderMovies()">
+</div>
+
+<div class="grid" id="movieList"></div>
+
+<section class="watch" id="watchBox">
+  <h2 id="watchTitle"></h2><br>
+  <video id="player" controls></video>
+
+  <div class="rating">
+    <h3>Puanla</h3>
+    <input id="userName" placeholder="Adın">
+    <input id="score" type="number" min="1" max="5" placeholder="1-5 arası puan">
+    <button onclick="rateMovie()">Puan Ver</button>
+    <p id="ratingInfo"></p>
+  </div>
+</section>
+
+<div class="admin" id="adminBox" style="display:none">
+  <h2>Admin Panel</h2>
+  <input id="adminPass" type="password" placeholder="Admin şifresi">
+  <button onclick="adminLogin()">Giriş</button>
+
+  <div id="adminArea" style="display:none;margin-top:15px">
+    <input id="filmAd" placeholder="Film adı">
+    <input id="filmAfis" placeholder="Afiş linki">
+    <input id="filmVideo" placeholder="Video linki">
+    <button onclick="addMovie()">Film Ekle</button>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { 
+  getFirestore, collection, addDoc, getDocs, doc, updateDoc, arrayUnion 
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCK6-Zw_UD0AhqR1XnGu69K0jr1Q0FwZzc",
+  authDomain: "dumanflix-2301a.firebaseapp.com",
+  databaseURL: "https://dumanflix-2301a-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "dumanflix-2301a",
+  storageBucket: "dumanflix-2301a.firebasestorage.app",
+  messagingSenderId: "845943948261",
+  appId: "1:845943948261:web:f4f0195ae2825d4c50e50c",
+  measurementId: "G-XD50EH22RT"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+let movies = [];
+let selectedMovie = null;
+
+window.showAdmin = function(){
+  document.getElementById("adminBox").style.display = "block";
+}
+
+window.adminLogin = function(){
+  if(document.getElementById("adminPass").value === "12345"){
+    document.getElementById("adminArea").style.display = "block";
+  }else{
+    alert("Şifre yanlış");
+  }
+}
+
+async function loadMovies(){
+  movies = [];
+  const snap = await getDocs(collection(db,"filmler"));
+
+  snap.forEach(item=>{
+    const d = item.data();
+
+    movies.push({
+      id:item.id,
+      ad:d.ad || d.Film || "İsimsiz",
+      afis:d.afis || "https://via.placeholder.com/300x450",
+      video:d.video || d.Video || "",
+      ratings:d.ratings || []
+    });
+  });
+
+  renderMovies();
+}
+
+window.renderMovies = function(){
+  const q = document.getElementById("search").value.toLowerCase();
+  const list = document.getElementById("movieList");
+  list.innerHTML = "";
+
+  movies.forEach((m,i)=>{
+    if(!m.ad.toLowerCase().includes(q)) return;
+
+    const avg = m.ratings.length
+      ? (m.ratings.reduce((a,b)=>a+Number(b.score),0)/m.ratings.length).toFixed(1)
+      : "Yok";
+
+    list.innerHTML += `
+      <div class="card">
+        <img src="${m.afis}">
+        <div class="info">
+          <h3>${m.ad}</h3>
+          <p>⭐ Puan: ${avg}</p>
+          <p>${m.ratings.length} kişi beğendi</p>
+          <button onclick="openMovie(${i})">İzle</button>
+        </div>
+      </div>
+    `;
+  });
+}
+
+window.openMovie = function(i){
+  selectedMovie = i;
+  const m = movies[i];
+
+  document.getElementById("watchBox").style.display = "block";
+  document.getElementById("watchTitle").innerText = m.ad;
+  document.getElementById("player").src = m.video;
+
+  showRating();
+  window.scrollTo(0,document.getElementById("watchBox").offsetTop);
+}
+
+window.rateMovie = async function(){
+  if(selectedMovie === null) return;
+
+  const name = document.getElementById("userName").value.trim();
+  const score = document.getElementById("score").value;
+
+  if(!name || !score){
+    alert("Ad ve puan yaz");
+    return;
+  }
+
+  const movie = movies[selectedMovie];
+
+  await updateDoc(doc(db,"filmler",movie.id),{
+    ratings: arrayUnion({name:name,score:Number(score)})
+  });
+
+  await loadMovies();
+  alert("Puan eklendi");
+}
+
+function showRating(){
+  const m = movies[selectedMovie];
+  const names = m.ratings.map(r=>`${r.name} (${r.score}⭐)`).join(", ");
+
+  document.getElementById("ratingInfo").innerHTML =
+    `Beğenenler: ${names || "Henüz yok"}`;
+}
+
+window.addMovie = async function(){
+  const ad = document.getElementById("filmAd").value;
+  const afis = document.getElementById("filmAfis").value;
+  const video = document.getElementById("filmVideo").value;
+
+  if(!ad || !afis || !video){
+    alert("Tüm alanları doldur");
+    return;
+  }
+
+  await addDoc(collection(db,"filmler"),{
+    ad:ad,
+    afis:afis,
+    video:video,
+    ratings:[]
+  });
+
+  alert("Film eklendi");
+  loadMovies();
+}
+
+loadMovies();
+</script>
+
+</body>
+</html>
