@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dumanflix AI Motoru</title>
+<style>
+body{margin:0;background:#060606;color:white;font-family:Arial}
+header{padding:25px;background:linear-gradient(90deg,#111,#7a0000);display:flex;justify-content:space-between}
+.logo{font-size:32px;font-weight:900;color:#e50914}
+.hero{padding:60px 25px;background:linear-gradient(#0008,#000),url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba') center/cover}
+.hero h1{font-size:45px;max-width:700px}
+button{background:#e50914;color:white;border:0;padding:12px 20px;border-radius:8px;font-weight:bold;cursor:pointer}
+input,textarea{width:100%;padding:14px;border-radius:8px;border:0;margin:10px 0;background:#1c1c1c;color:white}
+section{padding:25px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px}
+.card{background:#151515;border-radius:14px;padding:15px;box-shadow:0 0 20px #000}
+.card img{width:100%;height:230px;object-fit:cover;border-radius:10px}
+.aiBox{background:#101010;border:1px solid #333;padding:20px;border-radius:15px}
+.msg{background:#222;padding:12px;border-radius:10px;margin:10px 0}
+.ai{background:#2b0000}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">DUMANFLIX AI</div>
+  <button onclick="alert('Giriş sistemi eklenebilir')">Giriş Yap</button>
+</header>
+
+<div class="hero">
+  <h1>Dumanflix Yapay Zeka Motoru</h1>
+  <p>Film önerir, senaryo üretir, açıklama yazar ve kullanıcıya özel içerik seçer.</p>
+  <button onclick="aiRecommend()">Bana Film Öner</button>
+</div>
+
+<section>
+  <h2>Yapay Zeka Film Önerileri</h2>
+  <div class="grid" id="movies"></div>
+</section>
+
+<section>
+  <h2>Dumanflix AI Sohbet</h2>
+  <div class="aiBox">
+    <div id="chat"></div>
+    <input id="userInput" placeholder="Mesela: Bana aksiyon filmi öner">
+    <button onclick="sendAI()">Gönder</button>
+  </div>
+</section>
+
+<section>
+  <h2>AI Senaryo Üretici</h2>
+  <textarea id="topic" placeholder="Konu yaz: uzayda geçen korku filmi..."></textarea>
+  <button onclick="makeScenario()">Senaryo Üret</button>
+  <div class="msg ai" id="scenario"></div>
+</section>
+
+<script>
+const films = [
+ {name:"Karanlık Kod",type:"bilim kurgu",img:"https://images.unsplash.com/photo-1518709268805-4e9042af2176"},
+ {name:"Son Komando",type:"aksiyon",img:"https://images.unsplash.com/photo-1500530855697-b586d89ba3ee"},
+ {name:"Gece Avı",type:"korku",img:"https://images.unsplash.com/photo-1509248961158-e54f6934749c"},
+ {name:"Duman Şehri",type:"dram",img:"https://images.unsplash.com/photo-1493246507139-91e8fad9978e"}
+];
+
+function loadMovies(){
+ let box=document.getElementById("movies");
+ box.innerHTML="";
+ films.forEach(f=>{
+  box.innerHTML+=`
+  <div class="card">
+    <img src="${f.img}">
+    <h3>${f.name}</h3>
+    <p>Tür: ${f.type}</p>
+    <button onclick="alert('${f.name} seçildi')">İzle</button>
+  </div>`;
+ });
+}
+
+function aiRecommend(){
+ const random = films[Math.floor(Math.random()*films.length)];
+ alert("Dumanflix AI öneriyor: " + random.name + " - " + random.type);
+}
+
+function sendAI(){
+ let input=document.getElementById("userInput").value.toLowerCase();
+ let chat=document.getElementById("chat");
+ if(!input) return;
+
+ chat.innerHTML += `<div class="msg">Sen: ${input}</div>`;
+
+ let answer="Bunu analiz ettim. Sana özel içerik önerebilirim.";
+
+ if(input.includes("aksiyon")) answer="Dumanflix AI: Sana 'Son Komando' filmini öneriyorum.";
+ else if(input.includes("korku")) answer="Dumanflix AI: Sana 'Gece Avı' uygun.";
+ else if(input.includes("bilim")) answer="Dumanflix AI: 'Karanlık Kod' tam sana göre.";
+ else if(input.includes("film")) answer="Dumanflix AI: Ruh haline göre film seçebilirim. Aksiyon, korku veya bilim kurgu yaz.";
+
+ chat.innerHTML += `<div class="msg ai">${answer}</div>`;
+ document.getElementById("userInput").value="";
+}
+
+function makeScenario(){
+ let konu=document.getElementById("topic").value;
+ if(!konu) konu="gizemli bir şehirde geçen film";
+
+ document.getElementById("scenario").innerHTML =
+ "Dumanflix AI Senaryo: " + konu +
+ " hakkında karanlık atmosferli, güçlü karakterli ve sürükleyici bir film başlatıldı. " +
+ "Ana karakter gizli bir gerçekle karşılaşır ve olaylar kontrolünden çıkar.";
+}
+
+loadMovies();
+</script>
+
+</body>
+</html>
