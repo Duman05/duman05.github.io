@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dumanflix AI</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#050505;color:white;font-family:Arial,Helvetica,sans-serif}
+header{background:#090909;padding:18px 30px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
+.logo{font-size:30px;font-weight:900;color:#e50914}
+nav a{color:white;text-decoration:none;margin:0 10px;font-weight:bold}
+.search{padding:10px;border-radius:20px;border:none;background:#222;color:white}
+.hero{padding:80px 30px;background:linear-gradient(#0006,#050505),url("https://images.unsplash.com/photo-1489599849927-2ee91cede3ba") center/cover}
+.hero h1{font-size:50px;margin:0;color:white}
+.hero p{font-size:20px;max-width:650px}
+button{background:#e50914;color:white;border:none;padding:12px 18px;border-radius:8px;font-weight:bold;cursor:pointer}
+section{padding:30px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:20px}
+.card{background:#151515;padding:12px;border-radius:15px;transition:.3s}
+.card:hover{transform:scale(1.04)}
+.card img{width:100%;height:260px;object-fit:cover;border-radius:12px}
+.card h3{margin:10px 0 5px}
+.box{background:#111;padding:20px;border-radius:15px;margin-top:20px}
+input,select,textarea{width:100%;padding:13px;margin:8px 0;border:none;border-radius:8px;background:#222;color:white}
+.msg{background:#222;padding:12px;border-radius:10px;margin:10px 0}
+.ai{background:#310000}
+.profile{display:flex;gap:20px;align-items:center}
+.profile img{width:90px;height:90px;border-radius:50%}
+footer{text-align:center;padding:30px;background:#090909;color:#aaa}
+@media(max-width:700px){
+header{flex-direction:column;gap:10px}
+nav{display:flex;flex-wrap:wrap;justify-content:center}
+.hero h1{font-size:35px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">DUMANFLIX</div>
+  <nav>
+    <a href="#home">Ana Sayfa</a>
+    <a href="#films">Filmler</a>
+    <a href="#ai">DumanAI</a>
+    <a href="#profil">Profil</a>
+  </nav>
+  <input class="search" id="arama" placeholder="Film ara..." onkeyup="filmAra()">
+</header>
+
+<div class="hero" id="home">
+  <h1>Dumanflix AI Motoru</h1>
+  <p>Film öneren, senaryo yazan, arama yapan ve kullanıcıya özel içerik sunan yapay zeka destekli platform.</p>
+  <button onclick="rastgeleFilm()">DumanAI Bana Film Öner</button>
+</div>
+
+<section id="films">
+  <h2>🎬 Film Kataloğu</h2>
+  <div class="grid" id="filmListesi"></div>
+</section>
+
+<section id="ai">
+  <h2>🤖 DumanAI Sohbet</h2>
+  <div class="box">
+    <div id="chat">
+      <div class="msg ai">DumanAI: Merhaba! Film, dizi veya senaryo hakkında bana yazabilirsin.</div>
+    </div>
+    <input id="soru" placeholder="Mesela: Bana korku filmi öner">
+    <button onclick="dumanAI()">Gönder</button>
+  </div>
+
+  <div class="box">
+    <h2>📝 AI Senaryo Üretici</h2>
+    <textarea id="konu" placeholder="Konu yaz: Uzayda geçen korku filmi..."></textarea>
+    <button onclick="senaryoUret()">Senaryo Üret</button>
+    <div class="msg ai" id="senaryoSonuc"></div>
+  </div>
+
+  <div class="box">
+    <h2>🎯 Türüne Göre Film Öner</h2>
+    <select id="tur">
+      <option>Aksiyon</option>
+      <option>Korku</option>
+      <option>Bilim Kurgu</option>
+      <option>Dram</option>
+      <option>Komedi</option>
+    </select>
+    <button onclick="turOner()">Öner</button>
+    <div class="msg ai" id="turSonuc"></div>
+  </div>
+</section>
+
+<section id="profil">
+  <h2>👤 Profil</h2>
+  <div class="box profile">
+    <img src="https://via.placeholder.com/100">
+    <div>
+      <h2 id="kullaniciAdi">Misafir Kullanıcı</h2>
+      <p>⭐ Premium: Aktif</p>
+      <p>❤️ Favoriler: <span id="favSayisi">0</span></p>
+      <button onclick="profilGuncelle()">Profili Güncelle</button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Dumanflix AI © 2026 - Demo Sürüm
+</footer>
+
+<script>
+let favoriler = 0;
+
+const filmler = [
+  {
+    ad:"Karanlık Kod",
+    tur:"Bilim Kurgu",
+    puan:"8.7",
+    img:"https://images.unsplash.com/photo-1518709268805-4e9042af2176"
+  },
+  {
+    ad:"Son Komando",
+    tur:"Aksiyon",
+    puan:"8.4",
+    img:"https://images.unsplash.com/photo-1500530855697-b586d89ba3ee"
+  },
+  {
+    ad:"Gece Avı",
+    tur:"Korku",
+    puan:"7.9",
+    img:"https://images.unsplash.com/photo-1509248961158-e54f6934749c"
+  },
+  {
+    ad:"Duman Şehri",
+    tur:"Dram",
+    puan:"8.9",
+    img:"https://images.unsplash.com/photo-1493246507139-91e8fad9978e"
+  },
+  {
+    ad:"Yapay Zeka Savaşı",
+    tur:"Bilim Kurgu",
+    puan:"9.1",
+    img:"https://images.unsplash.com/photo-1535223289827-42f1e9919769"
+  },
+  {
+    ad:"Gizli Görev",
+    tur:"Aksiyon",
+    puan:"8.1",
+    img:"https://images.unsplash.com/photo-1519681393784-d120267933ba"
+  }
+];
+
+function filmleriYukle(liste = filmler){
+  const alan = document.getElementById("filmListesi");
+  alan.innerHTML = "";
+
+  liste.forEach((film,index)=>{
+    alan.innerHTML += `
+      <div class="card">
+        <img src="${film.img}">
+        <h3>${film.ad}</h3>
+        <p>Tür: ${film.tur}</p>
+        <p>⭐ ${film.puan}/10</p>
+        <button onclick="izle('${film.ad}')">İzle</button>
+        <button onclick="favoriEkle()">❤️</button>
+      </div>
+    `;
+  });
+}
+
+function izle(ad){
+  alert(ad + " oynatılıyor. Video oynatıcı sonraki aşamada eklenecek.");
+}
+
+function favoriEkle(){
+  favoriler++;
+  document.getElementById("favSayisi").innerText = favoriler;
+}
+
+function filmAra(){
+  let kelime = document.getElementById("arama").value.toLowerCase();
+  let sonuc = filmler.filter(film =>
+    film.ad.toLowerCase().includes(kelime) ||
+    film.tur.toLowerCase().includes(kelime)
+  );
+  filmleriYukle(sonuc);
+}
+
+function rastgeleFilm(){
+  let film = filmler[Math.floor(Math.random()*filmler.length)];
+  alert("DumanAI öneriyor: " + film.ad + " - " + film.tur);
+}
+
+function dumanAI(){
+  let soru = document.getElementById("soru").value.toLowerCase();
+  let chat = document.getElementById("chat");
+
+  if(soru.trim() === "") return;
+
+  chat.innerHTML += `<div class="msg">Sen: ${soru}</div>`;
+
+  let cevap = "Bunu analiz ettim. Sana film, dizi veya senaryo konusunda yardımcı olabilirim.";
+
+  if(soru.includes("korku")) cevap = "DumanAI: Sana Gece Avı filmini öneriyorum.";
+  else if(soru.includes("aksiyon")) cevap = "DumanAI: Son Komando tam sana göre.";
+  else if(soru.includes("bilim")) cevap = "DumanAI: Karanlık Kod veya Yapay Zeka Savaşı iyi seçim.";
+  else if(soru.includes("senaryo")) cevap = "DumanAI: Aşağıdaki senaryo üreticiye konu yaz, sana hikaye çıkarayım.";
+  else if(soru.includes("merhaba")) cevap = "DumanAI: Merhaba! Ben Dumanflix yapay zeka motoruyum.";
+
+  chat.innerHTML += `<div class="msg ai">${cevap}</div>`;
+  document.getElementById("soru").value = "";
+}
+
+function senaryoUret(){
+  let konu = document.getElementById("konu").value;
+  if(konu.trim() === "") konu = "gizemli bir şehirde geçen yapay zeka filmi";
+
+  document.getElementById("senaryoSonuc").innerHTML =
+  "DumanAI Senaryo: " + konu +
+  " hakkında etkileyici bir film başlar. Ana karakter sıradan bir hayat yaşarken gizli bir gerçekle karşılaşır. " +
+  "Bu gerçek onu büyük bir seçim yapmak zorunda bırakır. Finalde ise her şeyin aslında göründüğünden farklı olduğu anlaşılır.";
+}
+
+function turOner(){
+  let tur = document.getElementById("tur").value;
+  let uygun = filmler.filter(f => f.tur === tur);
+  let film = uygun.length ? uygun[Math.floor(Math.random()*uygun.length)] : filmler[0];
+
+  document.getElementById("turSonuc").innerHTML =
+  "DumanAI sana öneriyor: " + film.ad + " ⭐ " + film.puan;
+}
+
+function profilGuncelle(){
+  let isim = prompt("Kullanıcı adını yaz:");
+  if(isim){
+    document.getElementById("kullaniciAdi").innerText = isim;
+  }
+}
+
+filmleriYukle();
+</script>
+
+</body>
+</html>
